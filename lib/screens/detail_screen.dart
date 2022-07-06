@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:my_todo_app/screens/task_detail_screen.dart';
+import '../models/todo_model.dart';
+import '../services/file_service.dart';
 import '../services/theme_service.dart';
-import '../views/add_note_detail_view.dart';
 import '../views/completed_detail_view.dart';
 import '../views/to_do_detail_view.dart';
-import 'home_screen.dart';
 
 class DetailScreen extends StatefulWidget {
   static const id = "/detail_screen";
+  final String? path;
 
-  const DetailScreen({Key? key}) : super(key: key);
+  const DetailScreen({Key? key, this.path}) : super(key: key);
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -17,161 +19,65 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController _controller = TextEditingController();
+  bool _isCompleted = false;
+  bool isLoading = false;
+  List<ToDo> completedTodos = [];
+  List<ToDo> unCompletedTodos = [];
+
+  final TextEditingController _newTodoController = TextEditingController();
 
   @override
   initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _getAllTodos();
+  }
+
+  void _getAllTodos() async {
+    isLoading = true;
+    setState(() {});
+
+    List<ToDo> items = await FileService.getAllToDo(widget.path!);
+    for (ToDo item in items) {
+      if (item.isCompleted) {
+        completedTodos.add(item);
+      } else {
+        unCompletedTodos.add(item);
+      }
+    }
+
+    isLoading = false;
+    setState(() {});
   }
 
   void _goBack() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return const HomeScreen();
-    }));
+    Navigator.pop(context);
   }
 
-  void _goAddNoteDetailView() {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
-      return const AddNoteDetailView();
-    }));
-  }
-
-  /// #this function showed delete dialog
-  void _showDeleteDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(28),
-          ),
-          title: const Text(
-            "Are you sure ?",
-            style: TextStyle(fontSize: 22),
-          ),
-          content: Container(
-            color: Colors.transparent,
-            child: const Text(
-              "List will be permanently deleted",
-              style: TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: Color(0xFF5946D2),
-                ),
-              ),
-            ),
-            Container(
-              height: 40,
-              width: 80,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF85977),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: TextButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      const StadiumBorder(),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "Delete",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+  void _addATask() {
+    String directoryPath = widget.path!;
+    ToDo toDo = ToDo(
+      taskName: _newTodoController.text.trim(),
+      taskContent: '',
+      category: directoryPath,
+      isImportant: false,
+      isCompleted: _isCompleted,
+      createdDate: DateTime.now().toString(),
     );
-  }
-
-  /// #this function showed edit dialog
-  void _showEditDialog() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
-          title: const Text("Rename list"),
-          content: Container(
-            color: ThemeService.colorTextFieldBack,
-            child: TextField(
-              controller: _controller,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: "Rename list",
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: Color(
-                    0xFF5946D2,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              height: 40,
-              width: 80,
-              decoration: BoxDecoration(
-                color: const Color(0xFF5946D2),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: TextButton(
-                  style: ButtonStyle(
-                    shape: MaterialStateProperty.all(
-                      const StadiumBorder(),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "Rename",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
+    FocusScope.of(context).unfocus();
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TaskDetailScreen(
+                  toDo: toDo,
+                  state: DetailState.create,
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /// #appBar
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: false,
         elevation: 0,
@@ -189,16 +95,14 @@ class _DetailScreenState extends State<DetailScreen>
         ),
         actions: [
           IconButton(
-            splashRadius: 25,
-            onPressed: _showEditDialog,
+            onPressed: () {},
             icon: const Icon(
               Icons.mode_edit_outline_outlined,
               color: ThemeService.colorBlack,
             ),
           ),
           IconButton(
-            splashRadius: 25,
-            onPressed: _showDeleteDialog,
+            onPressed: () {},
             icon: const Icon(
               Icons.delete_outline,
               color: ThemeService.colorBlack,
@@ -218,37 +122,115 @@ class _DetailScreenState extends State<DetailScreen>
           ],
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          ToDoDetailView(),
-          CompletedDetailView(),
-        ],
-      ),
-      floatingActionButton: Container(
-        height: 50,
-        width: 395,
-        decoration: BoxDecoration(
-          color: Colors.blue,
-          borderRadius: BorderRadius.circular(30),
-        ),
-        child: TextField(
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Add a task",
-            hintStyle: const TextStyle(
-              color: Colors.white,
-              fontFamily: 'Roboto',
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
-            prefixIcon: IconButton(
-              onPressed: _goAddNoteDetailView,
-              icon: const Icon(Icons.add, color: Colors.white, size: 30,),
+      body: Stack(
+        children: [
+          // #body
+          TabBarView(
+            controller: _tabController,
+            children: [
+              ToDoDetailView(items: unCompletedTodos),
+              CompletedDetailView(items: completedTodos),
+            ],
+          ),
+
+          // #text_field
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: GestureDetector(
+              onTap: () => _textField(context),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: 40,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: ThemeService.colorUnselected,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.add,
+                      color: ThemeService.colorBackgroundLight,
+                      size: 25,
+                    ),
+                    const SizedBox(
+                      width: 7.5,
+                    ),
+                    Text(
+                      "Add a task",
+                      style: ThemeService.textStyleCaption(
+                          color: ThemeService.colorBackgroundLight),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+
+          // #isloading
+          Visibility(
+            visible: isLoading,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          )
+        ],
       ),
+    );
+  }
+
+  void _textField(BuildContext context) {
+    showModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                color: ThemeService.colorBackgroundLight,
+                constraints: const BoxConstraints(
+                  maxHeight: 70,
+                  minHeight: 70,
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  autofocus: true,
+                  controller: _newTodoController,
+                  style: ThemeService.textStyleBody(),
+                  textAlignVertical: TextAlignVertical.center,
+                  decoration: InputDecoration(
+                    isCollapsed: false,
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                      color: ThemeService.colorUnselected,
+                      width: 2,
+                    )),
+                    hintText: "Add a task",
+                    prefixIcon: Checkbox(
+                      value: _isCompleted,
+                      onChanged: (bool? value) {
+                        _isCompleted = value!;
+                        setState(() {});
+                      },
+                    ),
+                  ),
+                  onEditingComplete: _addATask,
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

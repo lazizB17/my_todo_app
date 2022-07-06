@@ -1,7 +1,7 @@
 class ToDo {
   String taskName;
   String taskContent;
-  Object category;
+  String category;
   bool isImportant;
   bool isCompleted;
   String createdDate;
@@ -54,8 +54,5 @@ class ToDo {
   }
 
   @override
-  int get hashCode => Object.hash(taskName, taskContent, category, isImportant,
-      isCompleted, createdDate, dueDate);
-
-// compare to
+  int get hashCode => Object.hash(taskName, taskContent, category, isImportant, isCompleted, createdDate, dueDate);
 }

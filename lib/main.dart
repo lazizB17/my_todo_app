@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:my_todo_app/screens/detail_screen.dart';
 import 'package:my_todo_app/screens/home_screen.dart';
 import 'package:my_todo_app/screens/splash_screen.dart';
+import 'package:my_todo_app/screens/task_detail_screen.dart';
 import 'package:my_todo_app/screens/welcome_screen.dart';
 
 void main() {
@@ -20,12 +21,13 @@ class MyToDoApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'My Todo App',
-      home: const SplashScreen(),
+      home: const HomeScreen(),
       routes: {
         HomeScreen.id: (context) => const HomeScreen(),
         SplashScreen.id: (context) => const SplashScreen(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         DetailScreen.id: (context) => const DetailScreen(),
+        TaskDetailScreen.id: (context) => const TaskDetailScreen(),
       },
     );
   }

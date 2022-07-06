@@ -5,6 +5,7 @@ import 'home_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static const id = "/welcome_screen";
+
   const WelcomeScreen({Key? key}) : super(key: key);
 
   @override
@@ -12,7 +13,6 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-
   void _goHome() {
     Navigator.pushReplacementNamed(context, HomeScreen.id);
   }
@@ -34,32 +34,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
             ),
             Expanded(
-                flex: 2,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      "Welcome to\n\tUno To Do",
-                      textAlign: TextAlign.center,
-                      style: ThemeService.textStyle1(),
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Welcome to\n\tUno To Do",
+                    textAlign: TextAlign.center,
+                    style: ThemeService.textStyle1(),
+                  ),
+                  Text(
+                    "Start using the best To Do app",
+                    style: ThemeService.textStyle2(),
+                  ),
+                  MaterialButton(
+                    minWidth: MediaQuery.of(context).size.width - 60,
+                    height: 50,
+                    onPressed: _goHome,
+                    shape: const StadiumBorder(),
+                    color: const Color(0xff5835E5),
+                    child: Text(
+                      "Get Started",
+                      style: ThemeService.textStyle3(),
                     ),
-                    Text(
-                      "Start using the best To Do app",
-                      style: ThemeService.textStyle2(),
-                    ),
-                    MaterialButton(
-                      minWidth: MediaQuery.of(context).size.width - 60,
-                      height: 50,
-                      onPressed: _goHome,
-                      shape: const StadiumBorder(),
-                      color: const Color(0xff5835E5),
-                      child: Text(
-                        "Get Started",
-                        style: ThemeService.textStyle3(),
-                      ),
-                    )
-                  ],
-                )),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),

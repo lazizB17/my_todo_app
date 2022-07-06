@@ -75,7 +75,7 @@ abstract class SearchDelegateCustom<T> {
 
   void showSuggestions(BuildContext context) {
     assert(_focusNode != null,
-    '_focusNode must be set by route before showSuggestions is called.');
+        '_focusNode must be set by route before showSuggestions is called.');
     _focusNode!.requestFocus();
     _currentBody = _SearchBody.suggestions;
   }
@@ -105,10 +105,10 @@ abstract class SearchDelegateCustom<T> {
   final TextEditingController _queryTextController = TextEditingController();
 
   final ProxyAnimation _proxyAnimation =
-  ProxyAnimation(kAlwaysDismissedAnimation);
+      ProxyAnimation(kAlwaysDismissedAnimation);
 
   final ValueNotifier<_SearchBody?> _currentBodyNotifier =
-  ValueNotifier<_SearchBody?>(null);
+      ValueNotifier<_SearchBody?>(null);
 
   _SearchBody? get _currentBody => _currentBodyNotifier.value;
 
@@ -119,20 +119,17 @@ abstract class SearchDelegateCustom<T> {
   _SearchPageRoute<T>? _route;
 }
 
-enum _SearchBody {
-  suggestions,
-  results,
-}
+enum _SearchBody { suggestions, results }
 
 class _SearchPageRoute<T> extends PageRoute<T> {
   _SearchPageRoute({
     required this.delegate,
   }) : assert(delegate != null) {
     assert(
-    delegate._route == null,
-    'The ${delegate.runtimeType} instance is currently used by another active '
-        'search. Please close that search by calling close() on the SearchDelegateCustom '
-        'before opening another search with the same delegate instance.',
+      delegate._route == null,
+      'The ${delegate.runtimeType} instance is currently used by another active '
+      'search. Please close that search by calling close() on the SearchDelegateCustom '
+      'before opening another search with the same delegate instance.',
     );
     delegate._route = this;
   }
@@ -153,11 +150,11 @@ class _SearchPageRoute<T> extends PageRoute<T> {
 
   @override
   Widget buildTransitions(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      Widget child,
-      ) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
     return FadeTransition(
       opacity: animation,
       child: child,
@@ -173,10 +170,10 @@ class _SearchPageRoute<T> extends PageRoute<T> {
 
   @override
   Widget buildPage(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      ) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     return _SearchPage<T>(
       delegate: delegate,
       animation: animation,
@@ -324,7 +321,6 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
 
             title: Row(
               mainAxisSize: MainAxisSize.min,
-
               children: [
                 Expanded(
                   flex: 1,
@@ -347,13 +343,19 @@ class _SearchPageState<T> extends State<_SearchPage<T>> {
                     },
                     cursorColor: ThemeService.colorMain,
                     decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.only(left: 15, bottom: 10),
-                      suffixIcon: widget.delegate._queryTextController.text.isNotEmpty ? widget.delegate.buildActions(context) : null,
+                      contentPadding:
+                          const EdgeInsets.only(left: 15, bottom: 10),
+                      suffixIcon:
+                          widget.delegate._queryTextController.text.isNotEmpty
+                              ? widget.delegate.buildActions(context)
+                              : null,
                       labelText: searchFieldLabel,
                       labelStyle: ThemeService.textStyleSearch(),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       floatingLabelStyle: ThemeService.textStyleSearch(),
-                      focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(width: 2, color: ThemeService.colorMain)),
+                      focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 2, color: ThemeService.colorMain)),
                     ),
                   ),
                 ),

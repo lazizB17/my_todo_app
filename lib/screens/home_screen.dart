@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           trash = element;
         }
       }
-      listDirectory.remove(trash!);
+      listDirectory.remove(trash);
       setState((){});
     } else {
       String pathAndroid = "storage/emulated/0/TodoApp";
@@ -136,8 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openDetailPage(String path) {
-    // TODO: concrete updated => provide path of DetailScreen
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const DetailScreen()));
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => DetailScreen(path: path,)));
   }
 
   @override
@@ -188,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {}),
               HomeItem(
                   iconColor: ThemeService.colorMain,
-                  imageIcon: "assets/icons/ic_house.png",
+                  imageIcon: "assets/icons/ic_home.png",
                   title: "tasks".tr,
                   onPressed: () {}),
               Divider(
