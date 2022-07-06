@@ -187,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {}),
               HomeItem(
                   iconColor: ThemeService.colorMain,
-                  imageIcon: "assets/icons/ic_home.png",
+                  imageIcon: "assets/icons/ic_house.png",
                   title: "tasks".tr,
                   onPressed: () {}),
               Divider(
